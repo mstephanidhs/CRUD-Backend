@@ -4,13 +4,13 @@ import com.postgresql.backend.exception.EmployeeNotFoundException;
 import com.postgresql.backend.model.Employee;
 import com.postgresql.backend.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 // controller in order to implement routing
 @RestController
-@CrossOrigin("http://localhost:3000")
 @RequestMapping("/employee")
 public class EmployeeController {
 
@@ -23,10 +23,13 @@ public class EmployeeController {
         return employeeRepo.findAll();
     }
 
+
     // add new employee
     @PostMapping("/addEmployee")
-    public Employee addEmployee(@RequestBody Employee employee) {
-        return employeeRepo.save(employee);
+    public ResponseEntity<String> addEmployee(@RequestBody Employee employee) {
+
+        employeeRepo.save(employee);
+        return ResponseEntity.ok("Employee was added successfully");
     }
 
     // get employee based on its ID
@@ -37,8 +40,8 @@ public class EmployeeController {
 
     // update fields of the employee using its ID
     @PutMapping("/{id}")
-    public Employee updateEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
-        return employeeRepo.findById(id).map(employee -> {
+    public ResponseEntity<String> updateEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
+        employeeRepo.findById(id).map(employee -> {
             employee.setFullName(newEmployee.getFullName());
             employee.setEmail(newEmployee.getEmail());
             employee.setJobTitle(newEmployee.getJobTitle());
@@ -47,16 +50,19 @@ public class EmployeeController {
             employee.setPassword(newEmployee.getPassword());
             return employeeRepo.save(employee);
         }).orElseThrow(() -> new EmployeeNotFoundException(id));
+
+        return ResponseEntity.ok("The information of the employee with id " + id + " have been successfully updated");
+
     }
 
     // delete an employee
     @DeleteMapping("{id}")
-    public String deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         if (!employeeRepo.existsById(id)) {
             throw new EmployeeNotFoundException(id);
         }
 
         employeeRepo.deleteById(id);
-        return "User with id " + id + " has been deleted successfully";
+        return ResponseEntity.ok("Employee with id " + id + " has been deleted successfully");
     }
 }

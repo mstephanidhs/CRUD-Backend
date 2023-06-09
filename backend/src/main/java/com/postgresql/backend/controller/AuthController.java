@@ -1,22 +1,30 @@
 package com.postgresql.backend.controller;
 
-import com.postgresql.backend.exception.EmployeeNotFoundException;
 import com.postgresql.backend.model.Employee;
-import com.postgresql.backend.repository.EmployeeRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.postgresql.backend.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
-@RequestMapping("/sign")
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    EmployeeRepo employeeRepo;
+    private final AuthenticationService service;
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(service.register(request));
+    }
 
     @PostMapping("/authenticate")
-    public Employee getEmployee(@RequestBody Employee employee) {
-        return employeeRepo.findByEmailAndPassword(employee.getEmail(), employee.getPassword()).orElseThrow(() -> new EmployeeNotFoundException(employee.getEmail()));
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(service.authenticate(request));
 
     }
 }
