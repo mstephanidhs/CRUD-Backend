@@ -17,10 +17,10 @@ public class EmployeeController {
     @Autowired
     EmployeeRepo employeeRepo;
 
-    // returns all the employees registered in the table
     @GetMapping("/getAll")
-    public List<Employee> getAllEmployees() {
-        return employeeRepo.findAll();
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeRepo.findAll();
+        return ResponseEntity.ok().body(employees);
     }
 
 
@@ -32,10 +32,10 @@ public class EmployeeController {
         return ResponseEntity.ok("Employee was added successfully");
     }
 
-    // get employee based on its ID
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeRepo.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeRepo.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+        return ResponseEntity.ok().body(employee);
     }
 
     // update fields of the employee using its ID
