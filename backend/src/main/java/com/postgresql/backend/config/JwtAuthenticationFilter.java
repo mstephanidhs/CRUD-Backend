@@ -18,11 +18,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 // OncePerRequestFilter: a filter for every HTTP request
+// a class that can manipulate the jwt token
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    // a class that can manipulate the jwt token
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     @Override

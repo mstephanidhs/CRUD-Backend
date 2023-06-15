@@ -43,6 +43,21 @@ public class AuthenticationService {
                 .build();
     }
 
+    public void addNewEmployee(RegisterRequest request) {
+        // create the new employee
+        var employee = Employee.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .jobTitle(request.getJobTitle())
+                .afm(request.getAfm())
+                .salary(request.getSalary())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
+        // save it
+        employeeRepo.save(employee);
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
         // allow us to authenticate the user based on its email and password
